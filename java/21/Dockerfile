@@ -28,7 +28,7 @@ LABEL       org.opencontainers.image.source="https://github.com/pterodactyl/yolk
 LABEL       org.opencontainers.image.licenses=MIT
 
 RUN 				apt-get update -y \
-						&& apt-get install -y lsof curl ca-certificates openssl git tar sqlite3 fontconfig libfreetype6 tzdata iproute2 libstdc++6 \
+						&& apt-get install -y lsof curl ca-certificates openssl git tar sqlite3 fontconfig libfreetype6 tzdata iproute2 libstdc++6 wget tcl which zlib-devel docbook-xsl libxslt graphviz \
 						&& useradd -d /home/container -m container
 RUN mkdir -p /opt && cd /opt && git clone https://github.com/jemalloc/jemalloc.git \
     && mkdir /tmp/jprof && mkdir /tmp/nmt && mkdir /tmp/pmap \
