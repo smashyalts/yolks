@@ -30,6 +30,18 @@ LABEL       org.opencontainers.image.licenses=MIT
 RUN 				apt-get update -y \
 						&& apt-get install -y lsof curl ca-certificates openssl git tar sqlite3 fontconfig libfreetype6 tzdata iproute2 libstdc++6 \
 						&& useradd -d /home/container -m container
+RUN mkdir -p /opt && cd /opt && git clone https://github.com/jemalloc/jemalloc.git \
+    && mkdir /tmp/jprof && mkdir /tmp/nmt && mkdir /tmp/pmap \
+    && mkdir /diagnostic
+
+RUN cd /opt/jemalloc && git checkout -b stable-4 origin/stable-4
+RUN cd /opt/jemalloc && ./autogen.sh --enable-prof
+RUN cd /opt/jemalloc && make dist
+RUN cd /opt/jemalloc && make
+RUN cd /opt/jemalloc && make install
+
+ENV LD_PRELOAD="/usr/local/lib/libjemalloc.so"
+ENV MALLOC_CONF="prof_leak:true,prof:true,lg_prof_interval:25,lg_prof_sample:18,prof_prefix:/home/container/memdumps"
 
 USER        container
 ENV         USER=container HOME=/home/container
